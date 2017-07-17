@@ -65,3 +65,71 @@ class Example extends React.Component {
 const EnhancedExample = IIHOC(Example)
 
 ReactDOM.render(<EnhancedExample date={(new Date).toISOString()} callback={function test() {}}/>, document.getElementById('root'))
+
+
+
+
+ ／／ for test
+ function replacer(key, value) {
+  if (typeof value === 'function') {
+    return `function ${value.name}() {...}`
+  }
+
+  return value
+}
+
+function stringify(value) {
+  return JSON.stringify(value, replacer, 2)
+}
+
+function IIHOC(WrappedComponent) {
+  return class II extends WrappedComponent {
+    render() {
+      return (
+        <div>
+          <h2>
+            HOC Debugger Component
+          </h2>
+          <p>
+            Props
+          </p>
+          <pre>{stringify(this.props)}</pre>
+          <p>
+            State
+          </p>
+          <pre>{stringify(this.state)}</pre>
+          <pre>{stringify(this.state.hasOwnProperty( 'name' )) }</pre>
+          {super.render()}
+        </div>
+      )
+    }
+  }
+}
+
+
+class Example extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      name: 'fran',
+      email: 'franleplant@gmail.com'
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <h2>
+          Wrapped Component
+        </h2>
+        <p>Im a wrapped component</p>
+        <pre>{stringify(this.state)}</pre>
+         <pre>{stringify(this.state.hasOwnProperty( 'name' )) }</pre>
+      </div>
+    )
+  }
+}
+
+const EnhancedExample = IIHOC(Example)
+
+      React.render(<EnhancedExample date={(new Date).toISOString()} callback={function test() {}}/>, document.getElementById('container'));
